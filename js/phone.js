@@ -1,12 +1,12 @@
-const loadPhone = async (searchText) => {
+const loadPhone = async (searchText, isShowALL) => {
   const res = await fetch(`https://openapi.programming-hero.com/api/phones?search=${searchText}`);
   const data = await res.json();
   const phones = data.data
   // console.log(phones);
-  displayPhone(phones)
+  displayPhone(phones, isShowALL)
 }
 
-const displayPhone = phones => {
+const displayPhone = (phones, isShowALL) => {
   // console.log(phones)
   const phoneContainer = document.getElementById('phone-container');
   // clear phone container cards before adding new card
@@ -14,15 +14,18 @@ const displayPhone = phones => {
 
   //display show all button if there are more than 12 phones
   const showAllContainer = document.getElementById('show-all-button');
-  if(phones.length > 12){
+  if(phones.length > 12 && !isShowALL){
     showAllContainer.classList.remove('hidden');
   }
   else{
     showAllContainer.classList.add('hidden');
   }
+  console.log('Is Show All',isShowALL);
 
-  // display only first 12 phones
-  phones = phones.slice(0,12);
+  // display only first 12 phones if not show all
+  if(!isShowALL){
+    phones = phones.slice(0,12);
+  }
 
   phones.forEach(phone => {
     console.log(phone)
@@ -36,8 +39,8 @@ const displayPhone = phones => {
         <div class="card-body">
           <h2 class="card-title">${phone.phone_name}</h2>
           <p>If a dog chews shoes whose shoes does he choose?</p>
-          <div class="card-actions justify-end">
-            <button class="btn btn-primary rounded-[10px] bg-orange-600 text-black font-bold">Buy Now</button>
+          <div class="card-actions justify-center">
+            <button class="btn btn-primary text-white font-bold">Show Details</button>
           </div>
         </div>`;
     // 4 --> append child
@@ -48,20 +51,20 @@ const displayPhone = phones => {
   toggolLoadingSpinner(false);
 }
 
-const handelSearch = () => {
+const handelSearch = (isShowALL) => {
   toggolLoadingSpinner(true);
   const searchField = document.getElementById('search-feild');
   const serchText = searchField.value;
   // console.log(serchText)
-  loadPhone(serchText);
+  loadPhone(serchText,isShowALL);
 }
 
-const handelSearch2 = () => {
-  toggolLoadingSpinner(true);
-  const searchField = document.getElementById('search-feild2');
-  const searchText = searchField.value;
-  loadPhone(searchText);
-}
+// const handelSearch2 = () => {
+//   toggolLoadingSpinner(true);
+//   const searchField = document.getElementById('search-feild2');
+//   const searchText = searchField.value;
+//   loadPhone(searchText);
+// }
 
 // loadding or spinner
 const toggolLoadingSpinner = (isLoading) => {
@@ -72,6 +75,11 @@ const toggolLoadingSpinner = (isLoading) => {
   else{
     loddingSpinner.classList.add('hidden');
   }
+}
+
+const handleShowAll = () => {
+  handelSearch(true);
+
 }
 
 // loadPhone();
